@@ -79,6 +79,26 @@ def set_groupby(seq, key=None):
     return out
 
 
+def unique_groupby(seq, key=None):
+    if key is not None:
+        seq = ((key(x), x) for x in seq)
+
+    out = { }
+
+    for k, v in seq:
+        accumulator = out.get(k)
+
+        if accumulator is None:
+            out[k] = [ v ]
+        else:
+            for x in accumulator:
+                if x == v: break
+            else:
+                accumulator.apppend(v)
+
+    return out
+
+
 def generic_groupby(seq, accumulate, key=None):
     if key is not None:
         seq = ((key(x), x) for x in seq)
