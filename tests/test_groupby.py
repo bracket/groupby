@@ -33,6 +33,29 @@ def test_sum_groupby():
     assert actual == expected
 
 
+def test_avg_groupby():
+    from groupby import avg_groupby, count_groupby, sum_groupby
+
+    pairs = [ (1, 2.), (2, 4.), (3, 4.), (2, 3.), (1, 1.), (2, 3.), ]
+
+    actual = avg_groupby(pairs)
+    expected = { 1 : 3/2, 2 : 10/3, 3 : 4 }
+
+    assert actual == expected
+
+    summed = sum_groupby(pairs)
+    counts = count_groupby(pairs)
+
+    assert actual == { k : summed[k] / counts[k] for k in actual }
+
+    data = map(float, range(5))
+
+    actual = avg_groupby(data, key=lambda x: x % 3)
+    expected = { 0. : 3/2, 1. : 5/2, 2. :  2. }
+
+    assert actual == expected
+
+
 def test_list_groupby():
     from groupby import list_groupby
 

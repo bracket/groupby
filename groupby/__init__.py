@@ -12,10 +12,33 @@ pairs.
 '''
 
 
-__version__ = '1.0'
+__version__ = '1.1'
 
 
 def count_groupby(seq, key=None):
+    '''Iterate over sequence and count occurrences of each key.
+
+        Parameters:
+            seq:
+                Iterable[Tuple[Hashable, Any] | Any]
+
+                Sequence of pairs to iterate over, or any sequence at all
+                provided the key function is supplied.
+
+            key:
+                None | Callable
+
+                If provided, seq may be an arbitrary sequence.  key will be
+                applied to each element to determine the key to group on.
+
+        Returns:
+            Dict[Hashable, int]
+
+            Counts of occurences of each key.
+    '''
+
+    seq = iter(seq)
+
     if key is not None:
         seq = ((key(x), x) for x in seq)
 
@@ -32,6 +55,29 @@ def count_groupby(seq, key=None):
 
 
 def sum_groupby(seq, key=None):
+    '''Iterate over sequence of pairs and sum second elements grouped by first elements
+
+        Parameters:
+            seq:
+                Iterable[Tuple[Hashable, Any] | Any]
+
+                Sequence of pairs to iterate over, or any sequence at all
+                provided the key function is supplied.
+
+            key:
+                None | Callable
+
+                If provided, seq may be an arbitrary sequence.  key will be
+                applied to each element to determine the key to group on.
+
+        Returns:
+            Dict[Hashable, Any]
+
+            Sums of elements grouped by key.
+    '''
+
+    seq = iter(seq)
+
     if key is not None:
         seq = ((key(x), x) for x in seq)
 
@@ -47,7 +93,75 @@ def sum_groupby(seq, key=None):
     return out
 
 
+def avg_groupby(seq, key=None):
+    '''Iterate over sequence of pairs and take average of second elements grouped by first elements
+
+        Parameters:
+            seq:
+                Iterable[Tuple[Hashable, Any] | Any]
+
+                Sequence of pairs to iterate over, or any sequence at all
+                provided the key function is supplied.
+
+            key:
+                None | Callable
+
+                If provided, seq may be an arbitrary sequence.  key will be
+                applied to each element to determine the key to group on.
+
+        Returns:
+            Dict[Hashable, Any]
+
+            Averages of elements grouped by key.
+    '''
+
+    seq = iter(seq)
+
+    if key is not None:
+        seq = ((key(x), x) for x in seq)
+
+    out = { }
+    counts = { }
+
+    for k, v in seq:
+        accumulator = out.get(k)
+        if accumulator is None:
+            out[k] = v
+            counts[k] = 1
+        else:
+            out[k] += v
+            counts[k] += 1
+
+    for k in out:
+        out[k] /= counts[k]
+
+    return out
+
+
 def list_groupby(seq, key=None):
+    '''Iterate over sequence of pairs and construct lists of second elements grouped by first elements.
+
+        Parameters:
+            seq:
+                Iterable[Tuple[Hashable, Any] | Any]
+
+                Sequence of pairs to iterate over, or any sequence at all
+                provided the key function is supplied.
+
+            key:
+                None | Callable
+
+                If provided, seq may be an arbitrary sequence.  key will be
+                applied to each element to determine the key to group on.
+
+        Returns:
+            Dict[Hashable, List[Any]]
+
+            Lists of elements grouped by key.
+    '''
+
+    seq = iter(seq)
+
     if key is not None:
         seq = ((key(x), x) for x in seq)
 
@@ -64,6 +178,29 @@ def list_groupby(seq, key=None):
 
 
 def set_groupby(seq, key=None):
+    '''Iterate over sequence of pairs and construct sets of second elements grouped by first elements.
+
+        Parameters:
+            seq:
+                Iterable[Tuple[Hashable, Any] | Any]
+
+                Sequence of pairs to iterate over, or any sequence at all
+                provided the key function is supplied.
+
+            key:
+                None | Callable
+
+                If provided, seq may be an arbitrary sequence.  key will be
+                applied to each element to determine the key to group on.
+
+        Returns:
+            Dict[Hashable, Set[Any]]
+
+            Sets of elements grouped by key.
+    '''
+
+    seq = iter(seq)
+
     if key is not None:
         seq = ((key(x), x) for x in seq)
 
@@ -80,6 +217,29 @@ def set_groupby(seq, key=None):
 
 
 def unique_groupby(seq, key=None):
+    '''Iterate over sequence of pairs and construct lists of uniqued second elements grouped by first elements.
+
+        Parameters:
+            seq:
+                Iterable[Tuple[Hashable, Any] | Any]
+
+                Sequence of pairs to iterate over, or any sequence at all
+                provided the key function is supplied.
+
+            key:
+                None | Callable
+
+                If provided, seq may be an arbitrary sequence.  key will be
+                applied to each element to determine the key to group on.
+
+        Returns:
+            Dict[Hashable, List[Any]]
+
+            Lists of distinct elements grouped by key.
+    '''
+
+    seq = iter(seq)
+
     if key is not None:
         seq = ((key(x), x) for x in seq)
 
@@ -100,6 +260,8 @@ def unique_groupby(seq, key=None):
 
 
 def generic_groupby(seq, accumulate, key=None):
+    seq = iter(seq)
+
     if key is not None:
         seq = ((key(x), x) for x in seq)
 
